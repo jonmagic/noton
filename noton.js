@@ -1,0 +1,9 @@
+var React = require("react");
+
+var HelloWorld = React.createClass({
+  render: function() {
+    return React.DOM.h1(null, "Hello World!");
+  }
+});
+
+React.renderComponent(HelloWorld(), document.getElementById('container'));
