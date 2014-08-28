@@ -14,7 +14,13 @@ Noton was inspired by [Notational Velocity](http://notational.net) and is built 
 
 ## Installation
 
-TBD
+```bash
+git clone https://github.com/jonmagic/noton.git
+cd noton
+npm install
+grunt install
+npm start
+```
 
 ## Contribution
 
