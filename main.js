@@ -1,3 +1,5 @@
+var fs = require('fs');
+var ipc = require('ipc');
 var app = require('app');
 var BrowserWindow = require('browser-window');
 
@@ -22,4 +24,9 @@ app.on('ready', function() {
     // when you should delete the corresponding element.
     mainWindow = null;
   });
+});
+
+ipc.on("noteTitlesRequest", function(event, path) {
+  var files = fs.readdirSync(path);
+  event.sender.send('noteTitlesReply', files);
 });
