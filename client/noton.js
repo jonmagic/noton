@@ -1,6 +1,6 @@
 var remote = require('remote');
-var React = require("react");
 var ipc = require('ipc');
+var React = require("react-atom-fork");
 
 var Noton = React.createClass({
   displayName: "Noton",
@@ -48,4 +48,4 @@ var NotesListItem = React.createClass({
   }
 })
 
-React.renderComponent(Noton(), document.getElementById('container'));
+React.renderComponent(Noton(), document.getElementById('react'));
