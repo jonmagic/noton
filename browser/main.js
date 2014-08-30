@@ -4,6 +4,8 @@ var app = require("app");
 var PathWatcher = require("pathwatcher");
 var BrowserWindow = require("browser-window");
 
+// App setup, creates window and loads index in the new window. Handles close
+// events to ensure the app closes and gets unreferenced.
 var mainWindow = null;
 
 app.on("window-all-closed", function() {
@@ -27,6 +29,8 @@ app.on("ready", function() {
   });
 });
 
+// Functions for getting note titles and setup to bind to directory changes
+// in order to notify the client when a note is added, removed, or renamed.
 var PATH = null;
 
 function loadNoteTitles(path) {
