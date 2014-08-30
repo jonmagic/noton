@@ -28,5 +28,5 @@ app.on('ready', function() {
 
 ipc.on("noteTitlesRequest", function(event, path) {
   var files = fs.readdirSync(path);
-  event.sender.send('noteTitlesReply', files);
+  event.returnValue = files;
 });
