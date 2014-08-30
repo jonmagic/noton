@@ -1,5 +1,5 @@
-var keyMirror = require('react/lib/keyMirror');
+var keyMirror = require('react-atom-fork/lib/keyMirror');
 
 module.exports = keyMirror({
-  FOLDER_CHANGED: null
+  RECEIVE_NOTE_TITLES: null
 });
