@@ -1,6 +1,7 @@
 var fs = require('fs');
 var ipc = require('ipc');
 var app = require('app');
+var watch_r = require('watch_r');
 var BrowserWindow = require('browser-window');
 
 var mainWindow = null;
@@ -26,7 +27,30 @@ app.on('ready', function() {
   });
 });
 
-ipc.on("noteTitlesRequest", function(event, path) {
+var PATH = null;
+
+function folderChanged(path) {
   var files = fs.readdirSync(path);
-  event.returnValue = files;
+
+  mainWindow.webContents.send('loadedNoteTitles', files);
+}
+
+function watchPath(path) {
+  watch_r(path, function(err, watcher) {
+    watcher.on("change", function(target) {
+      folderChanged(path);
+    });
+
+    watcher.on("remove", function(target) {
+      folderChanged(path);
+    });
+  });
+}
+
+ipc.on("loadNoteTitles", function(event, path) {
+  if(PATH != path)
+    watchPath(path);
+    PATH = path;
+
+  folderChanged(path);
 });

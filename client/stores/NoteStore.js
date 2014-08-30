@@ -3,20 +3,18 @@ var EventEmitter = require('events').EventEmitter;
 var merge = require('react-atom-fork/lib/merge');
 var ipc = require("ipc");
 
-var CHANGE_EVENT = 'change';
+var CHANGE_EVENT = "NOTES_CHANGED";
 var PATH = "/Users/jonmagic/Notes";
 
 var _noteTitles = [];
 
-function loadNoteTitles(path) {
-  _noteTitles = ipc.sendSync("noteTitlesRequest", path);
-}
-
 var NoteStore = merge(EventEmitter.prototype, {
   getAll: function() {
-    if(_noteTitles.length == 0)
-      loadNoteTitles(PATH);
     return _noteTitles;
+  },
+
+  emitChange: function() {
+    this.emit(CHANGE_EVENT);
   },
 
   addChangeListener: function(callback) {
@@ -27,5 +25,12 @@ var NoteStore = merge(EventEmitter.prototype, {
     this.removeListener(CHANGE_EVENT, callback);
   }
 });
+
+ipc.on("loadedNoteTitles", function(noteTitles) {
+  _noteTitles = noteTitles;
+  NoteStore.emitChange();
+});
+
+ipc.send("loadNoteTitles", PATH);
 
 module.exports = NoteStore;

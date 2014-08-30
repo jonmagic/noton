@@ -12,7 +12,6 @@ var Noton = React.createClass({
   displayName: "Noton",
 
   getInitialState: function() {
-    console.log("Here");
     return getNoteState();
   },
 
