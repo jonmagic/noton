@@ -43,7 +43,7 @@ function watchedPathListener(event, path) {
   loadNoteTitles(PATH);
 }
 
-ipc.on("loadNoteTitles", function(event, path) {
+ipc.on("setPathAndBindToChanges", function(event, path) {
   if(PATH != path)
     PathWatcher.closeAllWatchers();
     PathWatcher.watch(path, watchedPathListener);

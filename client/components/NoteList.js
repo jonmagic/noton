@@ -1,19 +1,19 @@
 var React = require("react-atom-fork");
-var NotesListItem = require("./NotesListItem");
+var NoteListItem = require("./NoteListItem");
 
-var NotesList = React.createClass({
-  displayName: "NotesList",
+var NoteList = React.createClass({
+  displayName: "NoteList",
 
   render: function() {
     var noteTitles = this.props.noteTitles,
         noteListItems = [];
 
     for (var id in noteTitles) {
-      noteListItems.push(NotesListItem({key: noteTitles[id], noteTitle: noteTitles[id]}));
+      noteListItems.push(NoteListItem({key: noteTitles[id], noteTitle: noteTitles[id]}));
     }
 
     return React.DOM.ul(null, noteListItems);
   }
 });
 
-module.exports = NotesList;
+module.exports = NoteList;

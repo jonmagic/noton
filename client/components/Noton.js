@@ -1,9 +1,11 @@
 var React = require("react-atom-fork");
 var NoteStore = require("../stores/NoteStore");
-var NotesList = require("./NotesList");
+var NotePathInput = require("./NotePathInput");
+var NoteList = require("./NoteList");
 
 function getNoteState() {
   return {
+    notePath: NoteStore.notePath(),
     noteTitles: NoteStore.getAll()
   };
 }
@@ -26,7 +28,8 @@ var Noton = React.createClass({
   render: function() {
     return React.DOM.div(null,
       React.DOM.h1(null, "Notes List"),
-      NotesList({noteTitles: this.state.noteTitles})
+      NotePathInput({id: "notePath", placeholder: "Enter path to your notes.", value: this.state.notePath}),
+      NoteList({noteTitles: this.state.noteTitles})
     );
   },
 

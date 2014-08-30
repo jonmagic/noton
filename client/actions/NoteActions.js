@@ -8,6 +8,13 @@ var NoteActions = {
       noteTitles: noteTitles
     });
   },
+
+  setNotePath: function(notePath) {
+    AppDispatcher.handleViewAction({
+      actionType: NoteConstants.SET_NOTE_PATH,
+      notePath: notePath
+    });
+  }
 }
 
 module.exports = NoteActions;

@@ -1,15 +1,30 @@
-var AppDispatcher = require('../AppDispatcher');
-var EventEmitter = require('events').EventEmitter;
-var merge = require('react-atom-fork/lib/merge');
-var NoteConstants = require('../constants/NoteConstants');
+var AppDispatcher = require("../AppDispatcher");
+var EventEmitter = require("events").EventEmitter;
+var merge = require("react-atom-fork/lib/merge");
+var NoteConstants = require("../constants/NoteConstants");
+var NoteDirectoryUtils = require("../utils/NoteDirectoryUtils");
 
 var CHANGE_EVENT = "NOTES_CHANGED";
 
 var _noteTitles = [];
+var _notePath = "/Users/jonmagic/Notes";
+
+function setNoteTitles(noteTitles) {
+  _noteTitles = noteTitles;
+}
+
+function setNotePath(notePath) {
+  _notePath = notePath;
+  NoteDirectoryUtils.setPathAndBindToChanges(_notePath);
+}
 
 var NoteStore = merge(EventEmitter.prototype, {
   getAll: function() {
     return _noteTitles;
+  },
+
+  notePath: function() {
+    return _notePath;
   },
 
   emitChange: function() {
@@ -30,7 +45,11 @@ AppDispatcher.register(function(payload) {
 
   switch(action.actionType) {
     case NoteConstants.RECEIVE_NOTE_TITLES:
-      _noteTitles = action.noteTitles;
+      setNoteTitles(action.noteTitles);
+      break;
+
+    case NoteConstants.SET_NOTE_PATH:
+      setNotePath(action.notePath);
       break;
 
     default:
@@ -45,5 +64,7 @@ AppDispatcher.register(function(payload) {
 
   return true; // No errors.  Needed by promise in Dispatcher.
 });
+
+setNotePath(_notePath);
 
 module.exports = NoteStore;
