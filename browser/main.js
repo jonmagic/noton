@@ -36,7 +36,6 @@ function loadNoteTitles(path) {
 }
 
 function watchedPathListener(event, path) {
-  console.log(event, path);
   loadNoteTitles(PATH);
 }
 
@@ -44,7 +43,6 @@ ipc.on("loadNoteTitles", function(event, path) {
   if(PATH != path)
     PathWatcher.closeAllWatchers();
     PathWatcher.watch(path, watchedPathListener);
-    console.log(PathWatcher.getWatchedPaths());
     PATH = path;
 
   loadNoteTitles(path);
