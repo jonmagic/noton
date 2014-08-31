@@ -2,29 +2,67 @@ var AppDispatcher = require("../AppDispatcher");
 var EventEmitter = require("events").EventEmitter;
 var merge = require("react-atom-fork/lib/merge");
 var NoteConstants = require("../constants/NoteConstants");
-var NoteDirectoryUtils = require("../utils/NoteDirectoryUtils");
+var NoteActions = require("../actions/NoteActions");
+var remote = require("remote");
+var ipc = require("ipc");
 
+var NOTE_PATH_KEY = "notePath";
 var CHANGE_EVENT = "NOTES_CHANGED";
 
-var _noteTitles = [];
-var _notePath = "/Users/jonmagic/Notes";
+var _noteTitles = [],
+    _notePath = null;
+
+
+function getNoteTitles(path) {
+  return remote.require("fs").readdirSync(path);
+}
 
 function setNoteTitles(noteTitles) {
   _noteTitles = noteTitles;
 }
 
+function getNotePath() {
+  var path = window.localStorage.getItem(NOTE_PATH_KEY);
+
+  if(!path)
+    path = remote.require("fs-plus").getHomeDirectory();
+
+  return path;
+}
+
 function setNotePath(notePath) {
+  if(!notePath)
+    return;
+
+  window.localStorage.setItem(NOTE_PATH_KEY, notePath);
+
+  ipc.send("setPathAndBindToChanges", notePath);
+
   _notePath = notePath;
-  NoteDirectoryUtils.setPathAndBindToChanges(_notePath);
 }
 
 var NoteStore = merge(EventEmitter.prototype, {
-  getAll: function() {
-    return _noteTitles;
+  init: function() {
+    var path = getNotePath(),
+        noteTitles = getNoteTitles(path);
+
+    // It's a little weird having a store call an action, but really it's the
+    // browser that calls the action when it sees a file added, updated, or
+    // or removed in the note path.
+    ipc.on("loadedNoteTitles", function(noteTitles) {
+      NoteActions.receiveNoteTitles(noteTitles);
+    });
+
+    setNotePath(path);
+    setNoteTitles(noteTitles);
   },
 
   notePath: function() {
     return _notePath;
+  },
+
+  noteTitles: function() {
+    return _noteTitles;
   },
 
   emitChange: function() {
@@ -49,22 +87,19 @@ AppDispatcher.register(function(payload) {
       break;
 
     case NoteConstants.SET_NOTE_PATH:
-      setNotePath(action.notePath);
+      var path = action.notePath,
+          noteTitles = getNoteTitles(path);
+
+      setNotePath(path);
+      setNoteTitles(noteTitles);
       break;
 
     default:
       return true;
   }
 
-  // This often goes in each case that should trigger a UI change. This store
-  // needs to trigger a UI change after every view action, so we can make the
-  // code less repetitive by putting it here.  We need the default case,
-  // however, to make sure this only gets called after one of the cases above.
   NoteStore.emitChange();
-
-  return true; // No errors.  Needed by promise in Dispatcher.
+  return true;
 });
-
-setNotePath(_notePath);
 
 module.exports = NoteStore;

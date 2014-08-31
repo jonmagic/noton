@@ -36,7 +36,7 @@ var NotePathInput = React.createClass({
 
   _onChange: function(event) {
     this.setState({
-      value: event.target.value
+      value: event.target.value.trim()
     });
   },
 

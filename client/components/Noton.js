@@ -6,7 +6,7 @@ var NoteList = require("./NoteList");
 function getNoteState() {
   return {
     notePath: NoteStore.notePath(),
-    noteTitles: NoteStore.getAll()
+    noteTitles: NoteStore.noteTitles()
   };
 }
 
