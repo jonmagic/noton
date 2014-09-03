@@ -1,7 +1,7 @@
 var React = require("react-atom-fork");
 
-var NoteListItem = React.createClass({
-  displayName: "NoteListItem",
+var DocumentListItem = React.createClass({
+  displayName: "DocumentListItem",
 
   render: function() {
     return React.DOM.li(null,
@@ -10,4 +10,4 @@ var NoteListItem = React.createClass({
   }
 });
 
-module.exports = NoteListItem;
+module.exports = DocumentListItem;

@@ -1,20 +1,20 @@
 var AppDispatcher = require('../dispatchers/AppDispatcher');
-var NoteConstants = require('../constants/NoteConstants');
+var DocumentConstants = require('../constants/DocumentConstants');
 
-var NoteActions = {
+var DocumentListActions = {
   receiveNoteTitles: function(noteTitles) {
     AppDispatcher.handleBrowserAction({
-      actionType: NoteConstants.RECEIVE_NOTE_TITLES,
+      actionType: DocumentConstants.RECEIVE_NOTE_TITLES,
       noteTitles: noteTitles
     });
   },
 
   setNotePath: function(notePath) {
     AppDispatcher.handleViewAction({
-      actionType: NoteConstants.SET_NOTE_PATH,
+      actionType: DocumentConstants.SET_NOTE_PATH,
       notePath: notePath
     });
   }
 }
 
-module.exports = NoteActions;
+module.exports = DocumentListActions;

@@ -1,8 +1,8 @@
 var AppDispatcher = require("../dispatchers/AppDispatcher");
 var EventEmitter = require("events").EventEmitter;
 var merge = require("react-atom-fork/lib/merge");
-var NoteConstants = require("../constants/NoteConstants");
-var NoteActions = require("../actions/NoteActions");
+var DocumentConstants = require("../constants/DocumentConstants");
+var DocumentListActions = require("../actions/DocumentListActions");
 var remote = require("remote");
 var ipc = require("ipc");
 
@@ -41,7 +41,7 @@ function setNotePath(notePath) {
   _notePath = notePath;
 }
 
-var NoteStore = merge(EventEmitter.prototype, {
+var DocumentsStore = merge(EventEmitter.prototype, {
   init: function() {
     var path = getNotePath(),
         noteTitles = getNoteTitles(path);
@@ -50,7 +50,7 @@ var NoteStore = merge(EventEmitter.prototype, {
     // browser that calls the action when it sees a file added, updated, or
     // or removed in the note path.
     ipc.on("loadedNoteTitles", function(noteTitles) {
-      NoteActions.receiveNoteTitles(noteTitles);
+      DocumentListActions.receiveNoteTitles(noteTitles);
     });
 
     setNotePath(path);
@@ -82,11 +82,11 @@ AppDispatcher.register(function(payload) {
   var action = payload.action;
 
   switch(action.actionType) {
-    case NoteConstants.RECEIVE_NOTE_TITLES:
+    case DocumentConstants.RECEIVE_NOTE_TITLES:
       setNoteTitles(action.noteTitles);
       break;
 
-    case NoteConstants.SET_NOTE_PATH:
+    case DocumentConstants.SET_NOTE_PATH:
       var path = action.notePath,
           noteTitles = getNoteTitles(path);
 
@@ -98,8 +98,8 @@ AppDispatcher.register(function(payload) {
       return true;
   }
 
-  NoteStore.emitChange();
+  DocumentsStore.emitChange();
   return true;
 });
 
-module.exports = NoteStore;
+module.exports = DocumentsStore;

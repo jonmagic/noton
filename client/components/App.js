@@ -1,13 +1,12 @@
 var React = require("react-atom-fork");
-var NoteStore = require("../stores/NoteStore");
-var NotePathInput = require("./NotePathInput");
-var NoteList = require("./NoteList");
+var DocumentsStore = require("../stores/DocumentsStore");
+var DocumentList = require("./DocumentList");
 var SearchForm = require("./SearchForm");
 
 function getNoteState() {
   return {
-    notePath: NoteStore.notePath(),
-    noteTitles: NoteStore.noteTitles(),
+    notePath: DocumentsStore.notePath(),
+    noteTitles: DocumentsStore.noteTitles(),
     selectedNoteText: "Hello World",
     searchQuery: "Find me all of the things!"
   };
@@ -21,11 +20,11 @@ var App = React.createClass({
   },
 
   componentDidMount: function() {
-    NoteStore.addChangeListener(this._onChange);
+    DocumentsStore.addChangeListener(this._onChange);
   },
 
   componentWillUnmount: function() {
-    NoteStore.removeChangeListener(this._onChange);
+    DocumentsStore.removeChangeListener(this._onChange);
   },
 
   render: function() {
@@ -38,7 +37,7 @@ var App = React.createClass({
       React.DOM.div({className: "container-fluid content-wrapper"},
         React.DOM.div({className: "notelist-resizer"},
           React.DOM.div({className: "notelist-scroller"},
-            NoteList({noteTitles: this.state.noteTitles})
+            DocumentList({noteTitles: this.state.noteTitles})
           )
         ),
         React.DOM.div({className: "workspace-resizer"},

@@ -1,7 +1,7 @@
 var React = require("react-atom-fork");
 var App = require("../client/components/App");
-var NoteStore = require("../client/stores/NoteStore");
+var DocumentsStore = require("../client/stores/DocumentsStore");
 
-NoteStore.init();
+DocumentsStore.init();
 
 React.renderComponent(App(), document.getElementById('react'));
