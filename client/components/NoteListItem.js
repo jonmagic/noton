@@ -4,7 +4,9 @@ var NoteListItem = React.createClass({
   displayName: "NoteListItem",
 
   render: function() {
-    return React.DOM.li(null, this.props.noteTitle);
+    return React.DOM.li(null,
+      React.DOM.a({href: "#"}, this.props.noteTitle)
+    );
   }
 });
 
