@@ -10,7 +10,7 @@
  * @typechecks
  */
 
-var invariant = require('./invariant');
+var invariant = require('react-atom-fork/lib/invariant');
 
 var _lastID = 1;
 var _prefix = 'ID_';

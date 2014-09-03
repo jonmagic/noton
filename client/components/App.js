@@ -13,8 +13,8 @@ function getNoteState() {
   };
 }
 
-var Noton = React.createClass({
-  displayName: "Noton",
+var App = React.createClass({
+  displayName: "App",
 
   getInitialState: function() {
     return getNoteState();
@@ -55,4 +55,4 @@ var Noton = React.createClass({
   }
 });
 
-module.exports = Noton;
+module.exports = App;

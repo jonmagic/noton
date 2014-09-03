@@ -1,4 +1,4 @@
-var AppDispatcher = require('../AppDispatcher');
+var AppDispatcher = require('../dispatchers/AppDispatcher');
 var NoteConstants = require('../constants/NoteConstants');
 
 var NoteActions = {

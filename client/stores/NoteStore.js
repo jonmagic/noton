@@ -1,4 +1,4 @@
-var AppDispatcher = require("../AppDispatcher");
+var AppDispatcher = require("../dispatchers/AppDispatcher");
 var EventEmitter = require("events").EventEmitter;
 var merge = require("react-atom-fork/lib/merge");
 var NoteConstants = require("../constants/NoteConstants");
