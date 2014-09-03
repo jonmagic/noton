@@ -2,12 +2,14 @@ var React = require("react-atom-fork");
 var NoteStore = require("../stores/NoteStore");
 var NotePathInput = require("./NotePathInput");
 var NoteList = require("./NoteList");
+var SearchForm = require("./SearchForm");
 
 function getNoteState() {
   return {
     notePath: NoteStore.notePath(),
     noteTitles: NoteStore.noteTitles(),
-    selectedNoteText: "Hello World"
+    selectedNoteText: "Hello World",
+    searchQuery: "Find me all of the things!"
   };
 }
 
@@ -30,9 +32,7 @@ var Noton = React.createClass({
     return React.DOM.div(null,
       React.DOM.div({className: "navbar navbar-inverse navbar-fixed-top"},
         React.DOM.div({className: "container-fluid"},
-          React.DOM.form({className: "navbar-form search-form"},
-            React.DOM.input({id: "search", placeholder: "enter search query", autoFocus: true, className: "form-control search-box"})
-          )
+          SearchForm({searchQuery: this.state.searchQuery})
         )
       ),
       React.DOM.div({className: "container-fluid content-wrapper"},
