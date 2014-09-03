@@ -1,0 +1,74 @@
+.search-form {
+  padding: 0;
+}
+
+.search-form .search-box {
+  width: 100%;
+}
+
+.content-wrapper {
+  bottom: 0;
+  left: 0;
+  padding: 0px;
+  position: absolute;
+  right: 0;
+  top: 50px;
+}
+
+.notelist-resizer {
+  background-color: #f5f5f5;
+  border-right: 1px solid #eee;
+  cursor: default;
+  display: block;
+  height: 100%;
+  min-width: 100px;
+  overflow: hidden;
+  padding: 0;
+  position: relative;
+  width: 200px;
+  z-index: 2;
+  -webkit-user-select: none;
+}
+
+.notelist-scroller {
+  box-sizing: border-box;
+  display: block;
+  height: 100%;
+  overflow-x: hidden;
+  overflow-y: auto;
+  width: 100%;
+}
+
+.notelist {
+  font-size: 11px;
+}
+
+.workspace-resizer {
+  bottom: 0;
+  box-sizing: border-box;
+  display: flex;
+  flex-basis: 0px;
+  flex-direction: column;
+  flex-grow: 1;
+  flex-shrink: 1;
+  flex-wrap: nowrap;
+  left: 200px;
+  overflow: hidden;
+  position: absolute;
+  right: 0;
+  top: 0;
+}
+
+.workspace-scroller {
+  box-sizing: border-box;
+  display: block;
+  height: 100%;
+  overflow: auto;
+  width: 100%;
+}
+
+.note {
+  max-width: 800px;
+  margin: auto;
+  padding: 15px 20px;
+}

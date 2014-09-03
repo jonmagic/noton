@@ -12,7 +12,7 @@ var NoteList = React.createClass({
       noteListItems.push(NoteListItem({key: noteTitles[id], noteTitle: noteTitles[id]}));
     }
 
-    return React.DOM.ul(null, noteListItems);
+    return React.DOM.ul({className: "nav notelist"}, noteListItems);
   }
 });
 
