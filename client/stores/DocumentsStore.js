@@ -49,8 +49,12 @@ var DocumentsStore = merge(EventEmitter.prototype, {
     // It's a little weird having a store call an action, but really it's the
     // browser that calls the action when it sees a file added, updated, or
     // or removed in the note path.
-    ipc.on("loadedNoteTitles", function(noteTitles) {
-      DocumentListActions.receiveNoteTitles(noteTitles);
+    ipc.on("loadAllDocumentDetails", function(allDocumentDetails) {
+      var titles = allDocumentDetails.map(function(documentDetails) {
+        return documentDetails.title;
+      })
+
+      DocumentListActions.receiveNoteTitles(titles);
     });
 
     setNotePath(path);
