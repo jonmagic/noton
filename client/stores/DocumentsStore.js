@@ -12,11 +12,6 @@ var CHANGE_EVENT = "NOTES_CHANGED";
 var _noteTitles = [],
     _notePath = null;
 
-
-function getNoteTitles(path) {
-  return remote.require("fs").readdirSync(path);
-}
-
 function setNoteTitles(noteTitles) {
   _noteTitles = noteTitles;
 }
@@ -43,8 +38,7 @@ function setNotePath(notePath) {
 
 var DocumentsStore = merge(EventEmitter.prototype, {
   init: function() {
-    var path = getNotePath(),
-        noteTitles = getNoteTitles(path);
+    var path = getNotePath();
 
     // It's a little weird having a store call an action, but really it's the
     // browser that calls the action when it sees a file added, updated, or
@@ -58,7 +52,6 @@ var DocumentsStore = merge(EventEmitter.prototype, {
     });
 
     setNotePath(path);
-    setNoteTitles(noteTitles);
   },
 
   notePath: function() {
@@ -91,11 +84,7 @@ AppDispatcher.register(function(payload) {
       break;
 
     case DocumentConstants.SET_NOTE_PATH:
-      var path = action.notePath,
-          noteTitles = getNoteTitles(path);
-
-      setNotePath(path);
-      setNoteTitles(noteTitles);
+      setNotePath(action.notePath);
       break;
 
     default:
