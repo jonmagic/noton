@@ -48,7 +48,8 @@ var DocumentsStore = merge(EventEmitter.prototype, {
         return documentDetails.title;
       })
 
-      DocumentListActions.receiveNoteTitles(titles);
+      setNoteTitles(titles);
+      DocumentsStore.emitChange();
     });
 
     setNotePath(path);
@@ -79,11 +80,7 @@ AppDispatcher.register(function(payload) {
   var action = payload.action;
 
   switch(action.actionType) {
-    case DocumentConstants.RECEIVE_NOTE_TITLES:
-      setNoteTitles(action.noteTitles);
-      break;
-
-    case DocumentConstants.SET_NOTE_PATH:
+    case DocumentConstants.SET_DOCUMENTS_PATH:
       setNotePath(action.notePath);
       break;
 
