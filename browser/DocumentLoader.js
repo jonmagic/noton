@@ -34,10 +34,15 @@ var DocumentLoader = {
 
     fs.listSync(rootPath, MARKDOWN_EXTENSIONS).forEach(function(documentPath) {
       var filename = path.basename(documentPath),
-          title = filename.replace(/\.(md|markdown)$/, "");
+          title = filename.replace(/\.(md|markdown)$/, ""),
+          checksum = fs.md5ForPath(documentPath),
+          fileStats = fs.statSync(documentPath);
 
       var documentDetails = {
-        title: title
+        path: documentPath,
+        filename: filename,
+        title: title,
+        checksum: checksum
       }
 
       files.push(documentDetails);

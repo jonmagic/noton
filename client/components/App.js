@@ -7,7 +7,7 @@ function getNoteState() {
   return {
     notePath: DocumentsStore.notePath(),
     noteTitles: DocumentsStore.noteTitles(),
-    selectedNoteText: "Hello World",
+    documentText: DocumentsStore.documentText(),
     searchQuery: "Find me all of the things!"
   };
 }
@@ -42,7 +42,7 @@ var App = React.createClass({
         ),
         React.DOM.div({className: "workspace-resizer"},
           React.DOM.div({className: "workspace-scroller"},
-            React.DOM.div({className: "note"}, this.state.selectedNoteText)
+            React.DOM.div({className: "note"}, this.state.documentText)
           )
         )
       )

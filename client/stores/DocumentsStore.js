@@ -4,13 +4,17 @@ var merge = require("react-atom-fork/lib/merge");
 var DocumentConstants = require("../constants/DocumentConstants");
 var DocumentListActions = require("../actions/DocumentListActions");
 var remote = require("remote");
+var fs = remote.require("fs-plus");
 var ipc = require("ipc");
+var _ = require("underscore-plus");
 
 var NOTE_PATH_KEY = "notePath";
 var CHANGE_EVENT = "NOTES_CHANGED";
 
 var _noteTitles = [],
-    _notePath = null;
+    _notePath = null,
+    _documents = [],
+    _selectedDocument = null;
 
 function setNoteTitles(noteTitles) {
   _noteTitles = noteTitles;
@@ -20,7 +24,7 @@ function getNotePath() {
   var path = window.localStorage.getItem(NOTE_PATH_KEY);
 
   if(!path)
-    path = remote.require("fs-plus").getHomeDirectory();
+    path = fs.getHomeDirectory();
 
   return path;
 }
@@ -36,6 +40,15 @@ function setNotePath(notePath) {
   _notePath = notePath;
 }
 
+function selectDocumentByTitle(title) {
+  var documentDetails = _.find(_documents, function(documentDetails) {
+    return documentDetails.title == title;
+  })
+
+  _selectedDocument = documentDetails;
+  _selectedDocument.text = fs.readFileSync(documentDetails.path, "utf8");
+}
+
 var DocumentsStore = merge(EventEmitter.prototype, {
   init: function() {
     var path = getNotePath();
@@ -44,6 +57,8 @@ var DocumentsStore = merge(EventEmitter.prototype, {
     // browser that calls the action when it sees a file added, updated, or
     // or removed in the note path.
     ipc.on("loadAllDocumentDetails", function(allDocumentDetails) {
+      _documents = allDocumentDetails;
+
       var titles = allDocumentDetails.map(function(documentDetails) {
         return documentDetails.title;
       })
@@ -61,6 +76,13 @@ var DocumentsStore = merge(EventEmitter.prototype, {
 
   noteTitles: function() {
     return _noteTitles;
+  },
+
+  documentText: function() {
+    if(!_selectedDocument)
+      return "";
+
+    return _selectedDocument.text;
   },
 
   emitChange: function() {
@@ -82,6 +104,10 @@ AppDispatcher.register(function(payload) {
   switch(action.actionType) {
     case DocumentConstants.SET_DOCUMENTS_PATH:
       setNotePath(action.notePath);
+      break;
+
+    case DocumentConstants.SELECT_DOCUMENT_BY_TITLE:
+      selectDocumentByTitle(action.title);
       break;
 
     default:

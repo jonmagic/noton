@@ -7,6 +7,13 @@ var DocumentListActions = {
       actionType: DocumentConstants.SET_DOCUMENTS_PATH,
       notePath: notePath
     });
+  },
+
+  selectDocumentByTitle: function(title) {
+    AppDispatcher.handleViewAction({
+      actionType: DocumentConstants.SELECT_DOCUMENT_BY_TITLE,
+      title: title
+    });
   }
 }
 
