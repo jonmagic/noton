@@ -10,7 +10,7 @@
     "start": "./bin/Atom.app/Contents/MacOS/Atom ."
   },
   "dependencies": {
-    "react-atom-fork": "^0.11.2",
-    "watch_r": "^0.0.15"
+    "pathwatcher": "^2.0.12",
+    "react-atom-fork": "^0.11.2"
   }
 }
