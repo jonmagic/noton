@@ -36,7 +36,8 @@ var DocumentLoader = {
           title = filename.replace(/\.(md|markdown)$/, ""),
           checksum = fs.md5ForPath(documentPath),
           fileStats = fs.statSync(documentPath),
-          modifiedAtEpoch = fileStats.mtime.getTime();
+          modifiedAtEpoch = fileStats.mtime.getTime(),
+          body = fs.readFileSync(documentPath, "utf8");
 
       // build hash of details
       var documentDetails = {
@@ -44,7 +45,8 @@ var DocumentLoader = {
         filename: filename,
         title: title,
         checksum: checksum,
-        modifiedAtEpoch: modifiedAtEpoch
+        modifiedAtEpoch: modifiedAtEpoch,
+        body: body
       }
 
       // add details to array

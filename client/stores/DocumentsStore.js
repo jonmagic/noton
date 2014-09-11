@@ -6,21 +6,60 @@ var remote = require("remote");
 var fs = remote.require("fs-plus");
 var ipc = require("ipc");
 var _ = require("underscore-plus");
+var lunr = require("lunr");
+
+var idx = lunr(function () {
+    this.field('title', { boost: 10 });
+    this.field('body');
+});
 
 var CHANGE_EVENT = "CHANGE";
 
 var _documents = [],
-    _selectedDocument = null;
+    _selectedDocument = null,
+    _results = [];
 
 ipc.on("loadAllDocumentDetails", function(allDocumentDetails) {
   _documents = allDocumentDetails;
+
+  _documents.forEach(function(documentDetails) {
+    idx.add({
+      title: documentDetails.title,
+      body: documentDetails.body,
+      id: documentDetails.checksum
+    });
+  });
 
   DocumentsStore.emitChange();
 });
 
 var DocumentsStore = merge(EventEmitter.prototype, {
   allDocuments: function() {
-    return _documents;
+    if(_results.length > 0) {
+      return _results;
+    } else {
+      return _documents;
+    }
+  },
+
+  search: function(query) {
+    if(!query || query == "") {
+      _results = [];
+      return;
+    }
+
+    var results = [];
+
+    idx.search(query).forEach(function(r) {
+      var documentDetails = _.find(_documents, function(documentDetails) {
+        return documentDetails.checksum == r.ref;
+      });
+
+      if(!!documentDetails)
+        results.push(documentDetails);
+    });
+
+    _results = results;
   },
 
   selectedDocument: function() {
@@ -50,7 +89,10 @@ AppDispatcher.register(function(payload) {
       })
 
       _selectedDocument = documentDetails;
-      _selectedDocument.text = fs.readFileSync(documentDetails.path, "utf8");
+      break;
+
+    case DocumentConstants.SEARCH_DOCUMENTS:
+      DocumentsStore.search(action.query);
       break;
 
     default:
@@ -61,4 +103,5 @@ AppDispatcher.register(function(payload) {
   return true;
 });
 
+window.DocumentsStore = DocumentsStore;
 module.exports = DocumentsStore;
