@@ -7,10 +7,6 @@ var MARKDOWN_EXTENSIONS = ["md", "markdown"];
 var currentPath = null,
     targetBrowser = null;
 
-function watchedPathListener(event, path) {
-  sendDocumentDetailsToApp(DocumentLoader.loadFromPath(currentPath));
-}
-
 function sendDocumentDetailsToApp(files) {
   targetBrowser.webContents.send("loadAllDocumentDetails", files);
 }
@@ -22,7 +18,9 @@ var DocumentLoader = {
     ipc.on("setPathAndBindToChanges", function(event, rootPath) {
       if(currentPath != rootPath)
         PathWatcher.closeAllWatchers();
-        PathWatcher.watch(rootPath, watchedPathListener);
+        PathWatcher.watch(rootPath, function(eventType) {
+          sendDocumentDetailsToApp(DocumentLoader.loadFromPath(currentPath));
+        });
         currentPath = rootPath;
 
       sendDocumentDetailsToApp(DocumentLoader.loadFromPath(rootPath));
