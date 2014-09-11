@@ -26,7 +26,7 @@ ipc.on("loadAllDocumentDetails", function(allDocumentDetails) {
     idx.add({
       title: documentDetails.title,
       body: documentDetails.body,
-      id: documentDetails.checksum
+      id: documentDetails.filename
     });
   });
 
@@ -52,7 +52,7 @@ var DocumentsStore = merge(EventEmitter.prototype, {
 
     idx.search(query).forEach(function(r) {
       var documentDetails = _.find(_documents, function(documentDetails) {
-        return documentDetails.checksum == r.ref;
+        return documentDetails.filename == r.ref;
       });
 
       if(!!documentDetails)
