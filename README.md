@@ -17,7 +17,7 @@ Noton was inspired by [Notational Velocity](http://notational.net) and is built 
 ```bash
 git clone https://github.com/jonmagic/noton.git
 cd noton
-npm install
+apm install
 grunt install
 npm start
 ```
