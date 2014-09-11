@@ -12,15 +12,6 @@ var CHANGE_EVENT = "CHANGE";
 var _documents = [],
     _selectedDocument = null;
 
-function selectDocumentByTitle(title) {
-  var documentDetails = _.find(_documents, function(documentDetails) {
-    return documentDetails.title == title;
-  })
-
-  _selectedDocument = documentDetails;
-  _selectedDocument.text = fs.readFileSync(documentDetails.path, "utf8");
-}
-
 ipc.on("loadAllDocumentDetails", function(allDocumentDetails) {
   _documents = allDocumentDetails;
 
@@ -54,7 +45,12 @@ AppDispatcher.register(function(payload) {
 
   switch(action.actionType) {
     case DocumentConstants.SELECT_DOCUMENT_BY_TITLE:
-      selectDocumentByTitle(action.title);
+      var documentDetails = _.find(_documents, function(documentDetails) {
+        return documentDetails.title == action.title;
+      })
+
+      _selectedDocument = documentDetails;
+      _selectedDocument.text = fs.readFileSync(documentDetails.path, "utf8");
       break;
 
     default:
