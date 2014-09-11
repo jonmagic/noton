@@ -5,7 +5,7 @@ var SearchForm = require("./SearchForm");
 
 function getAppState() {
   return {
-    documentsPath: DocumentsStore.documentsPath(),
+    documentsPath: DocumentsPathStore.getPath(),
     documents: DocumentsStore.allDocuments(),
     selectedDocument: DocumentsStore.selectedDocument(),
     searchQuery: "Find me all of the things!"
