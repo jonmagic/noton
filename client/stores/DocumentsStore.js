@@ -103,5 +103,4 @@ AppDispatcher.register(function(payload) {
   return true;
 });
 
-window.DocumentsStore = DocumentsStore;
 module.exports = DocumentsStore;
