@@ -2,70 +2,64 @@ var AppDispatcher = require("../dispatchers/AppDispatcher");
 var EventEmitter = require("events").EventEmitter;
 var merge = require("react-atom-fork/lib/merge");
 var DocumentConstants = require("../constants/DocumentConstants");
-var DocumentListActions = require("../actions/DocumentListActions");
 var remote = require("remote");
 var fs = remote.require("fs-plus");
 var ipc = require("ipc");
 var _ = require("underscore-plus");
+var lunr = require("lunr");
 
-var DOCUMENTS_PATH_KEY = "documentsPath";
-var CHANGE_EVENT = "DOCUMENTS_CHANGED";
+var idx = lunr(function () {
+    this.field('title', { boost: 10 });
+    this.field('body');
+});
 
-var _documentsPath = null,
-    _documents = [],
-    _selectedDocument = null;
+var CHANGE_EVENT = "CHANGE";
 
-function getDocumentsPath() {
-  var path = window.localStorage.getItem(DOCUMENTS_PATH_KEY);
+var _documents = [],
+    _selectedDocument = null,
+    _results = [];
 
-  if(!path)
-    path = fs.getHomeDirectory();
+ipc.on("loadAllDocumentDetails", function(allDocumentDetails) {
+  _documents = allDocumentDetails;
 
-  return path;
-}
+  _documents.forEach(function(documentDetails) {
+    idx.add({
+      title: documentDetails.title,
+      body: documentDetails.body,
+      id: documentDetails.filename
+    });
+  });
 
-function setDocumentsPath(documentsPath) {
-  if(!documentsPath)
-    return;
-
-  window.localStorage.setItem(DOCUMENTS_PATH_KEY, documentsPath);
-
-  ipc.send("setPathAndBindToChanges", documentsPath);
-
-  _documentsPath = documentsPath;
-}
-
-function selectDocumentByTitle(title) {
-  var documentDetails = _.find(_documents, function(documentDetails) {
-    return documentDetails.title == title;
-  })
-
-  _selectedDocument = documentDetails;
-  _selectedDocument.text = fs.readFileSync(documentDetails.path, "utf8");
-}
+  DocumentsStore.emitChange();
+});
 
 var DocumentsStore = merge(EventEmitter.prototype, {
-  init: function() {
-    var path = getDocumentsPath();
+  allDocuments: function() {
+    if(_results.length > 0) {
+      return _results;
+    } else {
+      return _documents;
+    }
+  },
 
-    // It's a little weird having a store call an action, but really it's the
-    // browser that calls the action when it sees a file added, updated, or
-    // or removed in the documents path.
-    ipc.on("loadAllDocumentDetails", function(allDocumentDetails) {
-      _documents = allDocumentDetails;
+  search: function(query) {
+    if(!query || query == "") {
+      _results = [];
+      return;
+    }
 
-      DocumentsStore.emitChange();
+    var results = [];
+
+    idx.search(query).forEach(function(r) {
+      var documentDetails = _.find(_documents, function(documentDetails) {
+        return documentDetails.filename == r.ref;
+      });
+
+      if(!!documentDetails)
+        results.push(documentDetails);
     });
 
-    setDocumentsPath(path);
-  },
-
-  documentsPath: function() {
-    return _documentsPath;
-  },
-
-  allDocuments: function() {
-    return _documents;
+    _results = results;
   },
 
   selectedDocument: function() {
@@ -89,12 +83,16 @@ AppDispatcher.register(function(payload) {
   var action = payload.action;
 
   switch(action.actionType) {
-    case DocumentConstants.SET_DOCUMENTS_PATH:
-      setDocumentsPath(action.documentsPath);
+    case DocumentConstants.SELECT_DOCUMENT_BY_TITLE:
+      var documentDetails = _.find(_documents, function(documentDetails) {
+        return documentDetails.title == action.title;
+      })
+
+      _selectedDocument = documentDetails;
       break;
 
-    case DocumentConstants.SELECT_DOCUMENT_BY_TITLE:
-      selectDocumentByTitle(action.title);
+    case DocumentConstants.SEARCH_DOCUMENTS:
+      DocumentsStore.search(action.query);
       break;
 
     default:

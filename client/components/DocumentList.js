@@ -10,7 +10,7 @@ var DocumentList = React.createClass({
 
     for (var id in documents) {
       var d = documents[id];
-      documentListItems.push(DocumentListItem({title: d.title, checksum: d.checksum}));
+      documentListItems.push(DocumentListItem({key: d.filename, title: d.title}));
     }
 
     return React.DOM.ul({className: "nav document-list"}, documentListItems);

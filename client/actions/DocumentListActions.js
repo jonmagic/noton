@@ -14,6 +14,13 @@ var DocumentListActions = {
       actionType: DocumentConstants.SELECT_DOCUMENT_BY_TITLE,
       title: title
     });
+  },
+
+  searchDocuments: function(query) {
+    AppDispatcher.handleViewAction({
+      actionType: DocumentConstants.SEARCH_DOCUMENTS,
+      query: query
+    });
   }
 }
 

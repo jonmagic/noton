@@ -2,6 +2,7 @@ var PathWatcher = require("pathwatcher");
 var fs = require("fs-plus");
 var ipc = require("ipc");
 var path = require("path");
+var _ = require("underscore-plus");
 
 var MARKDOWN_EXTENSIONS = ["md", "markdown"];
 var currentPath = null,
@@ -28,25 +29,40 @@ var DocumentLoader = {
   },
 
   loadFromPath: function(rootPath) {
-    var files = [];
+    var documents = [];
 
     fs.listSync(rootPath, MARKDOWN_EXTENSIONS).forEach(function(documentPath) {
       var filename = path.basename(documentPath),
           title = filename.replace(/\.(md|markdown)$/, ""),
           checksum = fs.md5ForPath(documentPath),
-          fileStats = fs.statSync(documentPath);
+          fileStats = fs.statSync(documentPath),
+          modifiedAtEpoch = fileStats.mtime.getTime(),
+          body = fs.readFileSync(documentPath, "utf8");
 
+      // build hash of details
       var documentDetails = {
         path: documentPath,
         filename: filename,
         title: title,
-        checksum: checksum
+        checksum: checksum,
+        modifiedAtEpoch: modifiedAtEpoch,
+        body: body
       }
 
-      files.push(documentDetails);
+      // add details to array
+      documents.push(documentDetails);
+
+      // bind to file changes
+      PathWatcher.watch(documentPath, function(eventType) {
+        sendDocumentDetailsToApp(DocumentLoader.loadFromPath(currentPath));
+      });
     });
 
-    return files;
+    var sortedDocuments = _.sortBy(documents, function(documentDetails) {
+      return -documentDetails.modifiedAtEpoch;
+    });
+
+    return sortedDocuments;
   }
 }
 

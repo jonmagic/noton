@@ -5,7 +5,7 @@ var SearchForm = require("./SearchForm");
 
 function getAppState() {
   return {
-    documentsPath: DocumentsStore.documentsPath(),
+    documentsPath: DocumentsPathStore.getPath(),
     documents: DocumentsStore.allDocuments(),
     selectedDocument: DocumentsStore.selectedDocument(),
     searchQuery: "Find me all of the things!"
@@ -28,10 +28,10 @@ var App = React.createClass({
   },
 
   render: function() {
-    var documentText = "";
+    var documentBody = "";
 
     if(!!this.state.selectedDocument)
-      documentText = this.state.selectedDocument.text;
+      documentBody = this.state.selectedDocument.body;
 
     return React.DOM.div(null,
       React.DOM.div({className: "navbar navbar-inverse navbar-fixed-top"},
@@ -47,7 +47,7 @@ var App = React.createClass({
         ),
         React.DOM.div({className: "workspace-resizer"},
           React.DOM.div({className: "workspace-scroller"},
-            React.DOM.div({className: "workspace"}, documentText)
+            React.DOM.div({className: "workspace"}, documentBody)
           )
         )
       )

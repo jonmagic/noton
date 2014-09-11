@@ -1,5 +1,6 @@
 var React = require("react-atom-fork");
 var ReactPropTypes = React.PropTypes;
+var DocumentListActions = require("../actions/DocumentListActions");
 
 var ENTER_KEY_CODE = 13;
 var element = null;
@@ -53,6 +54,8 @@ var SearchForm = React.createClass({
     this.setState({
       searchQuery: event.target.value
     });
+
+    DocumentListActions.searchDocuments(event.target.value);
   },
 
   _onKeyDown: function(event) {

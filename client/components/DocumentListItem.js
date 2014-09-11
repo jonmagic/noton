@@ -6,7 +6,6 @@ var DocumentListItem = React.createClass({
 
   render: function() {
     var linkOptions = {
-      key: this.props.title,
       onClick: this._onClick
     }
 
