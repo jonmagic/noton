@@ -8,20 +8,15 @@ var fs = remote.require("fs-plus");
 var ipc = require("ipc");
 var _ = require("underscore-plus");
 
-var NOTE_PATH_KEY = "notePath";
-var CHANGE_EVENT = "NOTES_CHANGED";
+var DOCUMENTS_PATH_KEY = "documentsPath";
+var CHANGE_EVENT = "DOCUMENTS_CHANGED";
 
-var _noteTitles = [],
-    _notePath = null,
+var _documentsPath = null,
     _documents = [],
     _selectedDocument = null;
 
-function setNoteTitles(noteTitles) {
-  _noteTitles = noteTitles;
-}
-
-function getNotePath() {
-  var path = window.localStorage.getItem(NOTE_PATH_KEY);
+function getDocumentsPath() {
+  var path = window.localStorage.getItem(DOCUMENTS_PATH_KEY);
 
   if(!path)
     path = fs.getHomeDirectory();
@@ -29,15 +24,15 @@ function getNotePath() {
   return path;
 }
 
-function setNotePath(notePath) {
-  if(!notePath)
+function setDocumentsPath(documentsPath) {
+  if(!documentsPath)
     return;
 
-  window.localStorage.setItem(NOTE_PATH_KEY, notePath);
+  window.localStorage.setItem(DOCUMENTS_PATH_KEY, documentsPath);
 
-  ipc.send("setPathAndBindToChanges", notePath);
+  ipc.send("setPathAndBindToChanges", documentsPath);
 
-  _notePath = notePath;
+  _documentsPath = documentsPath;
 }
 
 function selectDocumentByTitle(title) {
@@ -51,38 +46,30 @@ function selectDocumentByTitle(title) {
 
 var DocumentsStore = merge(EventEmitter.prototype, {
   init: function() {
-    var path = getNotePath();
+    var path = getDocumentsPath();
 
     // It's a little weird having a store call an action, but really it's the
     // browser that calls the action when it sees a file added, updated, or
-    // or removed in the note path.
+    // or removed in the documents path.
     ipc.on("loadAllDocumentDetails", function(allDocumentDetails) {
       _documents = allDocumentDetails;
 
-      var titles = allDocumentDetails.map(function(documentDetails) {
-        return documentDetails.title;
-      })
-
-      setNoteTitles(titles);
       DocumentsStore.emitChange();
     });
 
-    setNotePath(path);
+    setDocumentsPath(path);
   },
 
-  notePath: function() {
-    return _notePath;
+  documentsPath: function() {
+    return _documentsPath;
   },
 
-  noteTitles: function() {
-    return _noteTitles;
+  allDocuments: function() {
+    return _documents;
   },
 
-  documentText: function() {
-    if(!_selectedDocument)
-      return "";
-
-    return _selectedDocument.text;
+  selectedDocument: function() {
+    return _selectedDocument;
   },
 
   emitChange: function() {
@@ -103,7 +90,7 @@ AppDispatcher.register(function(payload) {
 
   switch(action.actionType) {
     case DocumentConstants.SET_DOCUMENTS_PATH:
-      setNotePath(action.notePath);
+      setDocumentsPath(action.documentsPath);
       break;
 
     case DocumentConstants.SELECT_DOCUMENT_BY_TITLE:

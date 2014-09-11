@@ -5,14 +5,15 @@ var DocumentList = React.createClass({
   displayName: "DocumentList",
 
   render: function() {
-    var noteTitles = this.props.noteTitles,
-        noteListItems = [];
+    var documents = this.props.documents,
+        documentListItems = [];
 
-    for (var id in noteTitles) {
-      noteListItems.push(DocumentListItem({key: noteTitles[id], noteTitle: noteTitles[id]}));
+    for (var id in documents) {
+      var d = documents[id];
+      documentListItems.push(DocumentListItem({title: d.title, checksum: d.checksum}));
     }
 
-    return React.DOM.ul({className: "nav notelist"}, noteListItems);
+    return React.DOM.ul({className: "nav document-list"}, documentListItems);
   }
 });
 

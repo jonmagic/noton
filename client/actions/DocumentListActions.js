@@ -2,10 +2,10 @@ var AppDispatcher = require('../dispatchers/AppDispatcher');
 var DocumentConstants = require('../constants/DocumentConstants');
 
 var DocumentListActions = {
-  setNotePath: function(notePath) {
+  setNotePath: function(documentsPath) {
     AppDispatcher.handleViewAction({
       actionType: DocumentConstants.SET_DOCUMENTS_PATH,
-      notePath: notePath
+      documentsPath: documentsPath
     });
   },
 

@@ -6,13 +6,12 @@ var DocumentListItem = React.createClass({
 
   render: function() {
     var linkOptions = {
-      href: "#",
-      dataFilename: "foo",
+      key: this.props.title,
       onClick: this._onClick
     }
 
     return React.DOM.li(null,
-      React.DOM.a(linkOptions, this.props.noteTitle)
+      React.DOM.a(linkOptions, this.props.title)
     );
   },
 

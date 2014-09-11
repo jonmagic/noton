@@ -3,11 +3,11 @@ var DocumentsStore = require("../stores/DocumentsStore");
 var DocumentList = require("./DocumentList");
 var SearchForm = require("./SearchForm");
 
-function getNoteState() {
+function getAppState() {
   return {
-    notePath: DocumentsStore.notePath(),
-    noteTitles: DocumentsStore.noteTitles(),
-    documentText: DocumentsStore.documentText(),
+    documentsPath: DocumentsStore.documentsPath(),
+    documents: DocumentsStore.allDocuments(),
+    selectedDocument: DocumentsStore.selectedDocument(),
     searchQuery: "Find me all of the things!"
   };
 }
@@ -16,7 +16,7 @@ var App = React.createClass({
   displayName: "App",
 
   getInitialState: function() {
-    return getNoteState();
+    return getAppState();
   },
 
   componentDidMount: function() {
@@ -28,6 +28,11 @@ var App = React.createClass({
   },
 
   render: function() {
+    var documentText = "";
+
+    if(!!this.state.selectedDocument)
+      documentText = this.state.selectedDocument.text;
+
     return React.DOM.div(null,
       React.DOM.div({className: "navbar navbar-inverse navbar-fixed-top"},
         React.DOM.div({className: "container-fluid"},
@@ -35,14 +40,14 @@ var App = React.createClass({
         )
       ),
       React.DOM.div({className: "container-fluid content-wrapper"},
-        React.DOM.div({className: "notelist-resizer"},
-          React.DOM.div({className: "notelist-scroller"},
-            DocumentList({noteTitles: this.state.noteTitles})
+        React.DOM.div({className: "document-list-resizer"},
+          React.DOM.div({className: "document-list-scroller"},
+            DocumentList({documents: this.state.documents})
           )
         ),
         React.DOM.div({className: "workspace-resizer"},
           React.DOM.div({className: "workspace-scroller"},
-            React.DOM.div({className: "note"}, this.state.documentText)
+            React.DOM.div({className: "workspace"}, documentText)
           )
         )
       )
@@ -50,7 +55,7 @@ var App = React.createClass({
   },
 
   _onChange: function() {
-    this.setState(getNoteState());
+    this.setState(getAppState());
   }
 });
 
