@@ -1,6 +1,6 @@
 var keyMirror = require('react-atom-fork/lib/keyMirror');
 
 module.exports = keyMirror({
-  RECEIVE_NOTE_TITLES: null,
-  SET_NOTE_PATH: null
+  SET_DOCUMENTS_PATH: null,
+  SELECT_DOCUMENT_BY_TITLE: null
 });

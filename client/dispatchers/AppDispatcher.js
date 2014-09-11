@@ -1,4 +1,4 @@
-var Dispatcher = require('./vendor/Dispatcher'),
+var Dispatcher = require('./Dispatcher'),
     copyProperties = require('react-atom-fork/lib/copyProperties');
 
 var AppDispatcher = copyProperties(new Dispatcher(), {
