@@ -49,6 +49,11 @@ var DocumentLoader = {
 
       // add details to array
       documents.push(documentDetails);
+
+      // bind to file changes
+      PathWatcher.watch(documentPath, function(eventType) {
+        sendDocumentDetailsToApp(DocumentLoader.loadFromPath(currentPath));
+      });
     });
 
     var sortedDocuments = _.sortBy(documents, function(documentDetails) {
