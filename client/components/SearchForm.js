@@ -5,10 +5,6 @@ var DocumentListActions = require("../actions/DocumentListActions");
 var ENTER_KEY_CODE = 13;
 var element = null;
 
-function keyDownListener(event) {
-
-}
-
 var SearchForm = React.createClass({
   displayName: "SearchForm",
 
