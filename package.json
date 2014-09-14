@@ -10,6 +10,7 @@
     "start": "./bin/Atom.app/Contents/MacOS/Atom ."
   },
   "dependencies": {
+    "codemirror": "4.5.0",
     "fs-plus": "^2.3.0",
     "lunr": "^0.5.5",
     "pathwatcher": "^2.1.1",
