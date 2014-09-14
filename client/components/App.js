@@ -2,12 +2,23 @@ var React = require("react-atom-fork");
 var DocumentsStore = require("../stores/DocumentsStore");
 var DocumentList = require("./DocumentList");
 var SearchForm = require("./SearchForm");
+var Editor = require("./Editor");
+
+function selectedDocumentBody() {
+  var selectedDocument = DocumentsStore.selectedDocument();
+
+  if(!!selectedDocument) {
+    return selectedDocument.body;
+  } else {
+    return "";
+  }
+}
 
 function getAppState() {
   return {
     documentsPath: DocumentsPathStore.getPath(),
     documents: DocumentsStore.allDocuments(),
-    selectedDocument: DocumentsStore.selectedDocument(),
+    selectedDocumentBody: selectedDocumentBody(),
     searchQuery: "Find me all of the things!"
   };
 }
@@ -28,10 +39,9 @@ var App = React.createClass({
   },
 
   render: function() {
-    var documentBody = "";
-
-    if(!!this.state.selectedDocument)
-      documentBody = this.state.selectedDocument.body;
+    var editorProps = {
+      initialDocumentBody: selectedDocumentBody()
+    };
 
     return React.DOM.div(null,
       React.DOM.div({className: "navbar navbar-inverse navbar-fixed-top"},
@@ -47,7 +57,7 @@ var App = React.createClass({
         ),
         React.DOM.div({className: "workspace-resizer"},
           React.DOM.div({className: "workspace-scroller"},
-            React.DOM.div({className: "workspace"}, documentBody)
+            Editor(editorProps)
           )
         )
       )
